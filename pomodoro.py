@@ -1,7 +1,9 @@
 import time
 
 def main():
-    for idx in range(10, 0, -1):
+    print("Enter seconds: ", end='')
+    seconds = input()
+    for idx in range(int(seconds), 0, -1):
         print(idx)
         time.sleep(1)
     print("Time's up!")
