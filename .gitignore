@@ -2,3 +2,6 @@
 env/
 *.class
 target/
+.classpath
+.project
+.settings/
