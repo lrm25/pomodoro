@@ -1,10 +1,16 @@
 package com.lmccrone.pomodoro.data;
 
-
 public class Status {
 
+    public static int DEFAULT_WORK_MINUTES = 25;
+    public static int DEFAULT_WORK_SECONDS = 0;
+    public static int DEFAULT_SHORT_BREAK_MINUTES = 5;
+    public static int DEFAULT_SHORT_BREAK_SECONDS = 0;
+    public static int DEFAULT_LONG_BREAK_MINUTES = 15;
+    public static int DEFAULT_LONG_BREAK_SECONDS = 0;
     public static int DEFAULT_ALARM_MINUTES = 1;
     public static int DEFAULT_ALARM_SECONDS = 0;
+    public static int DEFAULT_INTERVAL_COUNT = 4;
 
     public enum RunningStatus {
         RUNNING,
@@ -18,19 +24,16 @@ public class Status {
         LONG_BREAK
     }
 
-    public class PomodoroTime {
-        private int minutes;
-        private int seconds;
+    public Status() {
+        workTime = new PomodoroTime(DEFAULT_WORK_MINUTES, DEFAULT_WORK_SECONDS);
+        shortBreakTime = new PomodoroTime(DEFAULT_SHORT_BREAK_MINUTES, DEFAULT_SHORT_BREAK_SECONDS);
+        longBreakTime = new PomodoroTime(DEFAULT_LONG_BREAK_MINUTES, DEFAULT_LONG_BREAK_SECONDS);
+        alarmTime = new PomodoroTime(DEFAULT_ALARM_MINUTES, DEFAULT_ALARM_SECONDS);
+        intervals = DEFAULT_INTERVAL_COUNT;
+    }
 
-        public PomodoroTime(int minutes, int seconds) {
-            setTime(minutes, seconds);
-        }
-
-        public void setTime(int minutes, int seconds) {
-            // TODO: exceptions
-            this.minutes = minutes;
-            this.seconds = seconds;
-        }
+    public InitialStatus getInitialStatus() {
+        return new InitialStatus(workTime, shortBreakTime, longBreakTime, alarmTime, intervals);
     }
 
     public class AlarmStatus {
@@ -53,6 +56,7 @@ public class Status {
     private PomodoroTime workTime;
     private PomodoroTime shortBreakTime;
     private PomodoroTime longBreakTime;
+    private PomodoroTime alarmTime;
     private int intervals;
     private int currentInterval;
     private RunningStatus runningStatus;
