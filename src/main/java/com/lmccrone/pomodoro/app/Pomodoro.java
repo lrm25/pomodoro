@@ -27,7 +27,13 @@ public class Pomodoro {
     }
 
     public InitialStatus getInitialStatus() {
-        Status status = new Status();
+        Status status = null;
+        try {
+            status = new Status();
+        } catch (IllegalArgumentException iae) {
+            System.err.printf("Fatal config error:  %s\n", iae.getMessage());
+            System.exit(1);
+        }
         return status.getInitialStatus();
     }
 }

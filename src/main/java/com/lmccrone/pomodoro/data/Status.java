@@ -24,11 +24,14 @@ public class Status {
         LONG_BREAK
     }
 
-    public Status() {
-        workTime = new PomodoroTime(DEFAULT_WORK_MINUTES, DEFAULT_WORK_SECONDS);
-        shortBreakTime = new PomodoroTime(DEFAULT_SHORT_BREAK_MINUTES, DEFAULT_SHORT_BREAK_SECONDS);
-        longBreakTime = new PomodoroTime(DEFAULT_LONG_BREAK_MINUTES, DEFAULT_LONG_BREAK_SECONDS);
-        alarmTime = new PomodoroTime(DEFAULT_ALARM_MINUTES, DEFAULT_ALARM_SECONDS);
+    public Status() throws IllegalArgumentException {
+        workTime = new PomodoroTime("work", DEFAULT_WORK_MINUTES, DEFAULT_WORK_SECONDS);
+        shortBreakTime = new PomodoroTime("short break", DEFAULT_SHORT_BREAK_MINUTES, DEFAULT_SHORT_BREAK_SECONDS);
+        longBreakTime = new PomodoroTime("long break", DEFAULT_LONG_BREAK_MINUTES, DEFAULT_LONG_BREAK_SECONDS);
+        alarmTime = new PomodoroTime("alarm", DEFAULT_ALARM_MINUTES, DEFAULT_ALARM_SECONDS);
+        if (DEFAULT_INTERVAL_COUNT < 1 || 10 < DEFAULT_INTERVAL_COUNT) {
+            throw new IllegalArgumentException(String.format("Interval count (%d) must be between 1 and 10", intervals));
+        }
         intervals = DEFAULT_INTERVAL_COUNT;
     }
 
@@ -42,9 +45,8 @@ public class Status {
         PomodoroTime timeRemaining;
 
         public AlarmStatus() {
-            // TODO:  magic numbers
-            alarmTime = new PomodoroTime(DEFAULT_ALARM_MINUTES, DEFAULT_ALARM_SECONDS);
-            timeRemaining = new PomodoroTime(DEFAULT_ALARM_MINUTES, DEFAULT_ALARM_SECONDS);
+            alarmTime = new PomodoroTime("alarm", DEFAULT_ALARM_MINUTES, DEFAULT_ALARM_SECONDS);
+            timeRemaining = new PomodoroTime("remaining", DEFAULT_ALARM_MINUTES, DEFAULT_ALARM_SECONDS);
         }
 
         public void setAlarmTime(int minutes, int seconds) {
