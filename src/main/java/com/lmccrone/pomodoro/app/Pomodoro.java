@@ -10,6 +10,7 @@ import com.lmccrone.pomodoro.ui.Terminal;
 public class Pomodoro {
     
     private Terminal terminal;
+    private Status status;
 
     public static void main(String args[]) {
 
@@ -27,7 +28,6 @@ public class Pomodoro {
     }
 
     public InitialStatus getInitialStatus() {
-        Status status = null;
         try {
             status = new Status();
         } catch (IllegalArgumentException iae) {
@@ -35,5 +35,17 @@ public class Pomodoro {
             System.exit(1);
         }
         return status.getInitialStatus();
+    }
+
+    public void updateWorkTime(String minutesStr, String secondsStr) throws IllegalArgumentException {
+        int minutes = 0;
+        int seconds = 0;
+        try {
+            minutes = Integer.valueOf(minutesStr);
+            seconds = Integer.valueOf(secondsStr);
+        } catch (NumberFormatException nfe) {
+            throw new IllegalArgumentException(nfe.getMessage());
+        }
+        status.updateWorkTime(minutes, seconds);
     }
 }

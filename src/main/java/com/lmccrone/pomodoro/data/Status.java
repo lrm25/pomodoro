@@ -54,6 +54,10 @@ public class Status {
         }
     }
 
+    public void updateWorkTime(int minutes, int seconds) throws IllegalArgumentException {
+        workTime.setTime(minutes, seconds);
+    }
+
     private AlarmStatus alarmStatus;
     private PomodoroTime workTime;
     private PomodoroTime shortBreakTime;
