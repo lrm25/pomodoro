@@ -4,6 +4,9 @@ import java.lang.Integer;
 import java.lang.Thread;
 
 import com.lmccrone.pomodoro.data.InitialStatus;
+import com.lmccrone.pomodoro.data.PomodoroCode;
+import com.lmccrone.pomodoro.data.PomodoroException;
+import com.lmccrone.pomodoro.data.PomodoroTime;
 import com.lmccrone.pomodoro.data.Status;
 import com.lmccrone.pomodoro.ui.Terminal;
 
@@ -27,25 +30,39 @@ public class Pomodoro {
         terminal.run(this);
     }
 
-    public InitialStatus getInitialStatus() {
-        try {
-            status = new Status();
-        } catch (IllegalArgumentException iae) {
-            System.err.printf("Fatal config error:  %s\n", iae.getMessage());
-            System.exit(1);
-        }
+    public InitialStatus getInitialStatus() throws PomodoroException {
+        status = new Status();
         return status.getInitialStatus();
     }
 
-    public void updateWorkTime(String minutesStr, String secondsStr) throws IllegalArgumentException {
+    public PomodoroCode updateTime(String key, String minutesStr, String secondsStr) {
+        PomodoroTime time = null;
+        try {
+            time = status.getTime(key);
+        } catch (PomodoroException pe) {
+            return new PomodoroCode(pe.code, pe.e);
+        }
+        return updateTime(time, minutesStr, secondsStr);
+    }
+
+    private PomodoroCode updateTime(PomodoroTime time, String minutesStr, String secondsStr) {
+        
         int minutes = 0;
         int seconds = 0;
         try {
             minutes = Integer.valueOf(minutesStr);
+        } catch (NumberFormatException nfe) {
+            return new PomodoroCode(PomodoroCode.INVALID_MINUTES_VALUE_TYPE,
+                String.format("Values '%s' is not a valid integer",
+                minutesStr));
+        }
+        try {
             seconds = Integer.valueOf(secondsStr);
         } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException(nfe.getMessage());
+            return new PomodoroCode(PomodoroCode.INVALID_SECONDS_VALUE_TYPE,
+                String.format("Values '%s' an is not a valid integer", 
+                secondsStr));
         }
-        status.updateWorkTime(minutes, seconds);
+        return time.set(minutes, seconds);
     }
 }

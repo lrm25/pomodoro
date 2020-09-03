@@ -6,25 +6,33 @@ public class PomodoroTime {
     private int minutes;
     private int seconds;
 
-    public PomodoroTime(String description, int minutes, int seconds) throws IllegalArgumentException {
+    public PomodoroTime(String description, int minutes, int seconds) throws PomodoroException {
         this.description = description;
-        setTime(minutes, seconds);
+        PomodoroCode code;
+        if ((code = set(minutes, seconds)) != null) {
+            throw new PomodoroException(code.code, code.description, true);
+        }
     }
 
-    public void setTime(int minutes, int seconds) throws IllegalArgumentException {
+    public PomodoroCode set(int minutes, int seconds) {
+        // TODO:  make higher end customizable
         if (minutes < 0 || 60 < minutes) {
-            throw new IllegalArgumentException(String.format("%s time (%d min, %d sec): minutes must be between 0 and 60", 
-                description, minutes, seconds));
+            return new PomodoroCode(PomodoroCode.MINUTES_OUT_OF_RANGE,
+                String.format("%s time:  minutes (%d) must be between 0 and 60", 
+                description, minutes));
         } 
         if (seconds < 0 || 59 < seconds) {
-            throw new IllegalArgumentException(String.format("%s time (%d min, %d sec): seconds must be between 0 and 59",
-                description, minutes, seconds));
+            return new PomodoroCode(PomodoroCode.SECONDS_OUT_OF_RANGE,
+                String.format("%s time:  seconds (%d) must be between 0 and 60", 
+                description, seconds));
         }
         if (minutes == 0 && seconds == 0) {
-            throw new IllegalArgumentException(String.format("%s time: 0 min, 0 sec not allowed", description));
+            return new PomodoroCode(PomodoroCode.ZERO_TIME_ASSIGNMENT,
+                String.format("%s time: 0 min, 0 sec not allowed", description));
         }
         this.minutes = minutes;
         this.seconds = seconds;
+        return null;
     }
 
     public int getMinutes() {

@@ -4,12 +4,22 @@ import java.util.Scanner;
 
 import com.lmccrone.pomodoro.app.Pomodoro;
 import com.lmccrone.pomodoro.data.InitialStatus;
+import com.lmccrone.pomodoro.data.PomodoroCode;
+import com.lmccrone.pomodoro.data.PomodoroException;
+import com.lmccrone.pomodoro.data.Status;
 
 public class Terminal {
 
     public void run(Pomodoro pomodoro) {
-        InitialStatus initialStatus = pomodoro.getInitialStatus();
-        System.out.println(initialStatus.toString());
+        InitialStatus initialStatus = null;
+        try {
+            initialStatus = pomodoro.getInitialStatus();
+            System.out.println(initialStatus.toString());
+        } catch (PomodoroException pe) {
+            System.err.println(pe.getMessage());
+            System.err.println("Fatal error, exiting ...");
+            System.exit(1);
+        }
 
         System.out.println("Options:");
         System.out.println("(w)ork time");
@@ -30,12 +40,7 @@ public class Terminal {
             String minutesStr = scanner.next();
             System.out.printf("Enter seconds:  ");
             String secondsStr = scanner.next();
-            try {
-                pomodoro.updateWorkTime(minutesStr, secondsStr);
-            } catch (IllegalArgumentException iae) {
-                System.err.println(iae.getMessage());
-                continue;
-            }
+            PomodoroCode code = pomodoro.updateTime(Status.WORK_DESCRIPTION, minutesStr, secondsStr);
             timeEntered = true;
         }
         System.out.println(initialStatus.toString());
