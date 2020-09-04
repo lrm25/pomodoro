@@ -9,6 +9,7 @@ public class PomodoroCode {
     public static int INVALID_INTERVAL_COUNT = 0x1005;
     public static int INVALID_MINUTES_VALUE_TYPE = 0x1006;
     public static int INVALID_SECONDS_VALUE_TYPE = 0x1006;
+    public static int INVALID_TIME_EDIT_OPTION = 0x1007;
 
     public int code;
     public String description;
