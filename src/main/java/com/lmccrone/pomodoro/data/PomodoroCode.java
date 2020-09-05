@@ -10,6 +10,8 @@ public class PomodoroCode {
     public static int INVALID_MINUTES_VALUE_TYPE = 0x1006;
     public static int INVALID_SECONDS_VALUE_TYPE = 0x1006;
     public static int INVALID_TIME_EDIT_OPTION = 0x1007;
+    public static int INTERVAL_OUT_OF_RANGE = 0x1008;
+    public static int INVALID_INTERVAL_VALUE_TYPE = 0x1009;
 
     public int code;
     public String description;

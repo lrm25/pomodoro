@@ -6,10 +6,10 @@ public class InitialStatus {
     public PomodoroTime shortBreakTime;
     public PomodoroTime longBreakTime;
     public PomodoroTime alarmTime;
-    public int intervals;
+    public Status.IntegerBox intervals;
 
     public InitialStatus(PomodoroTime workTime, PomodoroTime shortBreakTime,
-        PomodoroTime longBreakTime, PomodoroTime alarmTime, int intervals) 
+        PomodoroTime longBreakTime, PomodoroTime alarmTime, Status.IntegerBox intervals) 
     {
         this.workTime = workTime;
         this.shortBreakTime = shortBreakTime;
@@ -25,6 +25,6 @@ public class InitialStatus {
             "Long break time:  \t%s\n" +
             "Alarm time:  \t\t%s\n" +
             "Intervals:  \t\t%d\n",
-            workTime, shortBreakTime, longBreakTime, alarmTime, intervals);
+            workTime, shortBreakTime, longBreakTime, alarmTime, intervals.value);
     }
 }

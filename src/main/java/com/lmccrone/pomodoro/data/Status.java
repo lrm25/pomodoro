@@ -50,7 +50,12 @@ public class Status {
             throw new PomodoroException(PomodoroCode.INVALID_INTERVAL_COUNT,
                 String.format("Interval count must between %d and %d\n", 1, 10), true);
         }
-        intervals = DEFAULT_INTERVAL_COUNT;
+        intervals = new IntegerBox();
+        intervals.value = DEFAULT_INTERVAL_COUNT;
+    }
+
+    public class IntegerBox {
+        public int value;
     }
 
     public InitialStatus getInitialStatus() {
@@ -90,13 +95,22 @@ public class Status {
         return time.set(minutes, seconds);
     }
 
+    public PomodoroCode setIntervalCount(int count) {
+        if ((count < 0) || (10 < count)) {
+            return new PomodoroCode(PomodoroCode.INTERVAL_OUT_OF_RANGE,
+                String.format("Interval (%d) must be between 1 and 10", count));
+        }
+        this.intervals.value = count;
+        return null;
+    }
+
     private AlarmStatus alarmStatus;
     private HashMap<String, PomodoroTime> times;
     private PomodoroTime workTime;
     private PomodoroTime shortBreakTime;
     private PomodoroTime longBreakTime;
     private PomodoroTime alarmTime;
-    private int intervals;
+    private IntegerBox intervals;
     private int currentInterval;
     private RunningStatus runningStatus;
     private WorkStatus workStatus;

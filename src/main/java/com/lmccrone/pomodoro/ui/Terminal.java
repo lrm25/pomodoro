@@ -11,15 +11,21 @@ import com.lmccrone.pomodoro.data.Status;
 
 public class Terminal {
 
-    private HashMap<String, String> charToOptionMap;
+    private HashMap<String, ValueUpdater> charToOptionMap;
 
-    public void run(Pomodoro pomodoro) {
+    private Pomodoro pomodoro;
+    private Scanner scanner;
 
-        charToOptionMap = new HashMap<String, String>();
-        charToOptionMap.put("w", Status.WORK_DESCRIPTION);
-        charToOptionMap.put("s", Status.SHORT_BREAK_DESCRIPTION);
-        charToOptionMap.put("l", Status.LONG_BREAK_DESCRIPTION);
-        charToOptionMap.put("a", Status.ALARM_DESCRIPTION);
+    public void run(Pomodoro p) {
+
+        this.pomodoro = p;
+
+        charToOptionMap = new HashMap<String, ValueUpdater>();
+        charToOptionMap.put("w", new TimeUpdater(Status.WORK_DESCRIPTION));
+        charToOptionMap.put("s", new TimeUpdater(Status.SHORT_BREAK_DESCRIPTION));
+        charToOptionMap.put("l", new TimeUpdater(Status.LONG_BREAK_DESCRIPTION));
+        charToOptionMap.put("a", new TimeUpdater(Status.ALARM_DESCRIPTION));
+        charToOptionMap.put("i", new IntervalUpdater());
 
         InitialStatus initialStatus = null;
         try {
@@ -38,28 +44,67 @@ public class Terminal {
         System.out.println("(a)larm time");
         System.out.println("(i)intervals");
         String option = "";
-        String timeDescription = "";
-        Scanner scanner = new Scanner(System.in);
+        ValueUpdater updater = null;
+        scanner = new Scanner(System.in);
         while (true) {
             System.out.printf("Enter option:  ");
             option = scanner.next();
-            timeDescription = charToOptionMap.get(option.toLowerCase());
-            if (timeDescription == null) {
+            updater = charToOptionMap.get(option.toLowerCase());
+            if (updater == null) {
                 System.err.println("Invalid option");
                 continue;
             }
+            updater.update();
+            System.out.println(initialStatus.toString());
             break;
         }
-        boolean timeEntered = false;
-        while (!timeEntered) {
-            System.out.printf("Enter minutes:  ");
-            String minutesStr = scanner.next();
-            System.out.printf("Enter seconds:  ");
-            String secondsStr = scanner.next();
-            PomodoroCode code = pomodoro.updateTime(timeDescription, minutesStr, secondsStr);
-            timeEntered = true;
-        }
-        System.out.println(initialStatus.toString());
         scanner.close();
+    }
+
+    private abstract class ValueUpdater {
+        public abstract void update();
+    }
+
+    private class TimeUpdater extends ValueUpdater {
+
+        private String name;
+
+        public TimeUpdater(String name) {
+            this.name = name;
+        }
+
+        public void update() {
+            boolean timeEntered = false;
+            PomodoroCode code = null;
+            while (!timeEntered) {
+                System.out.printf("Enter minutes:  ");
+                String minutesStr = scanner.next();
+                System.out.printf("Enter seconds:  ");
+                String secondsStr = scanner.next();
+                code = pomodoro.updateTime(name, minutesStr, secondsStr);
+                if (code != null) {
+                    System.err.println(code);
+                    continue;
+                }
+                timeEntered = true;
+            }
+        }
+    }
+
+    private class IntervalUpdater extends ValueUpdater {
+        public void update() {
+            boolean intervalEntered = false;
+            PomodoroCode code = null;
+            while (!intervalEntered) {
+                System.out.printf("Enter interval count:  ");
+                String intervalStr = scanner.next();
+                code = pomodoro.updateIntervalCount(intervalStr);
+                if (code != null) {
+                    System.err.println(code);
+                    continue;
+                }
+                intervalEntered = true;
+            }
+        }
     }
 }

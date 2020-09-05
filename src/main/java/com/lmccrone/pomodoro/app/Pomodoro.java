@@ -53,16 +53,28 @@ public class Pomodoro {
             minutes = Integer.valueOf(minutesStr);
         } catch (NumberFormatException nfe) {
             return new PomodoroCode(PomodoroCode.INVALID_MINUTES_VALUE_TYPE,
-                String.format("Values '%s' is not a valid integer",
+                String.format("Value '%s' is not a valid integer",
                 minutesStr));
         }
         try {
             seconds = Integer.valueOf(secondsStr);
         } catch (NumberFormatException nfe) {
             return new PomodoroCode(PomodoroCode.INVALID_SECONDS_VALUE_TYPE,
-                String.format("Values '%s' an is not a valid integer", 
+                String.format("Value '%s' is not a valid integer", 
                 secondsStr));
         }
         return time.set(minutes, seconds);
+    }
+
+    public PomodoroCode updateIntervalCount(String intervalCountStr) {
+        int intervalCount = 0;
+        try {
+            intervalCount = Integer.valueOf(intervalCountStr);
+        } catch (NumberFormatException nfe) {
+            return new PomodoroCode(PomodoroCode.INVALID_INTERVAL_VALUE_TYPE,
+                String.format("Value '%s' is not a valid integer", 
+                intervalCountStr));
+        }
+        return status.setIntervalCount(intervalCount);
     }
 }
